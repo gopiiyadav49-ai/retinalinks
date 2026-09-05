@@ -2,22 +2,27 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
+import { PANELS } from '@/lib/dioramaData'
 
-const WORDS = ['Website', 'Mobile App', 'Web App', 'Brand']
-const INTERVAL_MS = 2500
+const ALL_WORDS = PANELS.map((p) => p.label)
 
-export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 'center' }) {
-  const [index, setIndex] = useState(0)
+export default function AnimatedHeadline({
+  align = 'left',
+  word,
+}: {
+  align?: 'left' | 'center'
+  word?: string
+}) {
   const [slotWidth, setSlotWidth] = useState<number | null>(null)
   const measureRef = useRef<HTMLSpanElement>(null)
 
-  // Measure the widest word at 1.14em (14% larger) on mount so the slot is fixed-width
+  // Measure the widest word at 1.14em on mount so the slot is fixed-width
   useEffect(() => {
     if (measureRef.current) {
       const el = measureRef.current
       el.style.fontSize = '1.14em'
       let maxW = 0
-      WORDS.forEach((w) => {
+      ALL_WORDS.forEach((w) => {
         el.textContent = w
         maxW = Math.max(maxW, el.offsetWidth)
       })
@@ -26,13 +31,7 @@ export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 
     }
   }, [])
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % WORDS.length)
-    }, INTERVAL_MS)
-    return () => clearInterval(timer)
-  }, [])
-
+  const currentWord = word || ALL_WORDS[0]
   const isLeft = align === 'left'
 
   return (
@@ -65,7 +64,7 @@ export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 
         }}
       />
 
-      {/* LINE 1 — Controlled explicitly */}
+      {/* LINE 1 */}
       <span
         style={{
           display: 'block',
@@ -77,7 +76,7 @@ export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 
         We build your
       </span>
 
-      {/* LINE 2 — Controlled explicitly: rotating word with +14% visual weight */}
+      {/* LINE 2 — rotating word driven by diorama active panel */}
       <span
         style={{
           display: 'inline-flex',
@@ -94,7 +93,7 @@ export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
-            key={WORDS[index]}
+            key={currentWord}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -102,7 +101,6 @@ export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 
             style={{
               display: 'inline-block',
               whiteSpace: 'nowrap',
-              // Visual weight: 14% larger font-size for prominent anchor emphasis
               fontSize: '1.14em',
               fontWeight: 800,
               letterSpacing: '-0.025em',
@@ -112,12 +110,12 @@ export default function AnimatedHeadline({ align = 'left' }: { align?: 'left' | 
               lineHeight: 1.15,
             }}
           >
-            {WORDS[index]}
+            {currentWord}
           </motion.span>
         </AnimatePresence>
       </span>
 
-      {/* LINE 3 — Controlled explicitly: designed to convert. */}
+      {/* LINE 3 */}
       <span
         style={{
           display: 'block',
