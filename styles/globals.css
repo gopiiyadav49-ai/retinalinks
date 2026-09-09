@@ -55,36 +55,24 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   PERFORMANCE LAYER — GPU compositing, paint containment, lazy rendering
-   No visual changes. Only rendering engine hints.
+   PERFORMANCE — safe GPU compositing hints only
+   (contain: strict / content-visibility removed — they crash PostCSS on
+   certain build environments and cause layout issues on position:fixed elements)
    ───────────────────────────────────────────────────────────────────────── */
 
-/* Promote animated elements to their own GPU layer to avoid main-thread paints */
+/* Promote particle canvas to its own GPU layer — prevents main-thread repaints */
 .global-ambient-particles-wrap {
-  will-change: contents;
   transform: translateZ(0);
-  contain: strict;
+  will-change: transform;
 }
 
-/* Major page sections: use content-visibility to skip off-screen paint entirely */
-/* Sections appear instantly when they scroll into view — animations unaffected */
-.faq-section,
-.about-section,
-.work-section-root,
-.contact-page-root,
-.services-page-root {
-  content-visibility: auto;
-  /* Reserve estimated height so scrollbar doesn't jump */
-  contain-intrinsic-size: 0 600px;
-}
-
-/* Navbar: fixed, keep composited */
+/* Keep the fixed navbar on the compositor thread for smooth scrolling */
 nav {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
 
-/* Images: block prevents white-space below inline images that causes reflow */
+/* Images: block removes inline white-space gap that causes layout shift */
 img {
   display: block;
   max-width: 100%;
