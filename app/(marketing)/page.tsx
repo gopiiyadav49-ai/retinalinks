@@ -8,11 +8,14 @@ import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
 import { FaqSection } from '@/components/sections/FaqSection'
 import { ClosingCtaSection } from '@/components/sections/ClosingCtaSection'
 
-export const metadata: Metadata = {
-  title: 'Retinalinks — Digital Agency',
+import { createMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = createMetadata({
+  title: 'Retinalinks — Premier Digital Agency & Website Development Company',
   description:
-    'A digital agency helping ambitious companies across the world launch products that look premium, load fast, and convert. From first sketch to shipped product.',
-}
+    'Retinalinks is a premier digital agency and leading website development company. We engineer custom Next.js web applications, enterprise websites, and conversion-focused UI/UX design systems for visionary brands worldwide.',
+  path: '/',
+})
 
 export default function HomePage() {
   return (

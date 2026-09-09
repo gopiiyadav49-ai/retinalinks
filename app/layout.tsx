@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import '@/styles/globals.css'
-import { createMetadata } from '@/lib/seo'
+import { createMetadata, generateOrganizationJsonLd } from '@/lib/seo'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import { GlobalAmbientBackground } from '@/components/ui/GlobalAmbientBackground'
@@ -32,8 +32,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const jsonLd = generateOrganizationJsonLd()
+
   return (
     <html lang="en" className={`${inter.variable} ${plusJakartaSans.variable}`}>
+      <head>
+        {/* Schema.org Organization & ProfessionalService JSON-LD for AI Search & Knowledge Graphs */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-background text-foreground antialiased selection:bg-accent selection:text-white relative">
         <GlobalAmbientBackground />
         <Navbar />

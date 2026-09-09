@@ -6,10 +6,18 @@ import { ContactSidebar } from '@/components/contact/ContactSidebar'
 import { WhatHappensNext } from '@/components/contact/WhatHappensNext'
 
 export const metadata: Metadata = createMetadata({
-  title: 'Contact — Retinalinks Digital Agency',
+  title: 'Hire Retinalinks — Start a Website or Web App Project',
   description:
-    'Start your project with Retinalinks. Build premium digital products, web apps, and mobile applications with world-class engineering.',
+    'Partner with Retinalinks to build high-performance web applications, bespoke corporate websites, and enterprise digital systems. Get a detailed proposal within 24 hours.',
   path: '/contact',
+  keywords: [
+    'Hire Retinalinks',
+    'hire website development company',
+    'hire digital agency',
+    'hire Next.js developers',
+    'web development proposal',
+    'request a quote digital agency',
+  ],
 })
 
 export default function ContactPage() {
