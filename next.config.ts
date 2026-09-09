@@ -27,15 +27,10 @@ const nextConfig: NextConfig = {
   },
 
   // ─── HTTP Response Headers ─────────────────────────────────────────────────
+  // NOTE: Vercel automatically sets Cache-Control: immutable on /_next/static/*
+  // so we do NOT override that here — overriding it causes a build warning.
   async headers() {
     return [
-      {
-        // Aggressive long-term caching for all static assets (JS, CSS, fonts, images)
-        source: '/_next/static/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
       {
         // Cache public files (images, llms.txt, etc.) for 1 week
         source: '/(:path*\\.(?:jpg|jpeg|png|svg|webp|avif|ico|woff2|woff|ttf|txt))',
@@ -44,11 +39,11 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // HTML pages: always fresh, but serve stale while revalidating
+        // HTML pages: always fresh at edge, serve stale while revalidating
         source: '/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=0, s-maxage=300, stale-while-revalidate=600' },
-          // Security headers — no runtime cost, reduces XSS parse overhead
+          // Security headers — no runtime cost
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
