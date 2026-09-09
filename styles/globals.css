@@ -48,6 +48,46 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Eliminate layout shift from scrollbar appearing */
+  overflow-x: hidden;
+  /* Prevent iOS tap-highlight delay */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   PERFORMANCE LAYER — GPU compositing, paint containment, lazy rendering
+   No visual changes. Only rendering engine hints.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Promote animated elements to their own GPU layer to avoid main-thread paints */
+.global-ambient-particles-wrap {
+  will-change: contents;
+  transform: translateZ(0);
+  contain: strict;
+}
+
+/* Major page sections: use content-visibility to skip off-screen paint entirely */
+/* Sections appear instantly when they scroll into view — animations unaffected */
+.faq-section,
+.about-section,
+.work-section-root,
+.contact-page-root,
+.services-page-root {
+  content-visibility: auto;
+  /* Reserve estimated height so scrollbar doesn't jump */
+  contain-intrinsic-size: 0 600px;
+}
+
+/* Navbar: fixed, keep composited */
+nav {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Images: block prevents white-space below inline images that causes reflow */
+img {
+  display: block;
+  max-width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {

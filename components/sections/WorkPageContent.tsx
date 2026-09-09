@@ -172,6 +172,8 @@ function TiltCard({ project, index }: { project: Project; index: number }) {
               height={600}
               className="work-card-img"
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 42vw"
+              priority={index === 0}
+              loading={index === 0 ? 'eager' : 'lazy'}
             />
           </motion.div>
         </div>
