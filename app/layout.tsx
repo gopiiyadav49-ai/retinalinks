@@ -1,17 +1,11 @@
 import type { Metadata, Viewport } from 'next'
-import dynamic from 'next/dynamic'
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import '@/styles/globals.css'
 import { createMetadata, generateOrganizationJsonLd } from '@/lib/seo'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
-
-// Lazy-load the particle canvas — it runs entirely client-side after first paint.
-// Using ssr:false prevents a hydration mismatch and avoids blocking HTML delivery.
-const GlobalAmbientBackground = dynamic(
-  () => import('@/components/ui/GlobalAmbientBackground').then((m) => m.GlobalAmbientBackground),
-  { ssr: false }
-)
+// Client wrapper handles ssr:false dynamic import (not allowed in Server Components directly)
+import { ParticleBackgroundLoader } from '@/components/ui/ParticleBackgroundLoader'
 
 const inter = Inter({
   variable: '--font-sans',
@@ -53,7 +47,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased selection:bg-accent selection:text-white relative">
-        <GlobalAmbientBackground />
+        <ParticleBackgroundLoader />
         <Navbar />
         {children}
         <Footer />
