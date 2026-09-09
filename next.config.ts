@@ -20,9 +20,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [],
   },
 
+  // ─── Server-side external packages ─────────────────────────────────────────
+  // These packages must NOT be bundled by Turbopack — they require native Node.js
+  // behaviour (TCP sockets, crypto) and crash the build worker (0xC0000409) when
+  // Turbopack tries to process them during "Collecting page data".
+  serverExternalPackages: ['postgres', 'drizzle-orm', 'drizzle-orm/postgres-js', '@supabase/supabase-js'],
+
   // ─── Experimental speed features ───────────────────────────────────────────
   experimental: {
-    // Pre-connect to Google Fonts earlier to reduce font load latency
+    // Tree-shake these large packages so only used exports are bundled
     optimizePackageImports: ['framer-motion', 'next-auth'],
   },
 
