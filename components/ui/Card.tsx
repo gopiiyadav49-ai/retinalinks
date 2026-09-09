@@ -12,6 +12,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, as: Component = 'div', ...props }, ref) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Comp = Component as any
     return (
       <Comp

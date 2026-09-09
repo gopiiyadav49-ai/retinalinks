@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useMemo, useEffect, useState } from 'react'
+import React, { useRef, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Points, PointMaterial } from '@react-three/drei'
 import * as THREE from 'three'
@@ -95,22 +95,19 @@ function ParticleKnot() {
   )
 }
 
+const emptySubscribe = () => () => {}
+
 // =============================================================================
-// STEP 4: THE GSAP UI CHOREOGRAPHY (<AgencyHero />)
+// STEP 5: HERO CONTENT COMPONENT (Typography & Layout)
 // =============================================================================
 export function AgencyHero() {
-  const [mounted, setMounted] = useState(false)
+  const mounted = React.useSyncExternalStore(emptySubscribe, () => true, () => false)
   const heroContainerRef = useRef<HTMLDivElement>(null)
   const badgeRef = useRef<HTMLDivElement>(null)
   const headlineRef = useRef<HTMLHeadingElement>(null)
   const subheadlineRef = useRef<HTMLParagraphElement>(null)
   const ctaGroupRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
-
-  // Avoid SSR hydration issues with WebGL Canvas in Next.js App Router
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // GSAP Entrance Choreography
   useEffect(() => {

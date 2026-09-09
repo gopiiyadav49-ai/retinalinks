@@ -12,6 +12,7 @@ export interface SectionProps extends React.HTMLAttributes<HTMLElement> {
 
 export const Section = React.forwardRef<HTMLElement, SectionProps>(
   ({ className, as: Component = 'section', ...props }, ref) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Comp = Component as any
     return (
       <Comp

@@ -17,10 +17,12 @@ export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false)
   const pathname = usePathname()
 
-  // Close mobile menu on route changes
-  React.useEffect(() => {
+  // Close mobile menu on route changes (render-time state adjustment)
+  const [prevPathname, setPrevPathname] = React.useState(pathname)
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname)
     setIsOpen(false)
-  }, [pathname])
+  }
 
   return (
     <header className="navbar" role="banner">

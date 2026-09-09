@@ -463,21 +463,18 @@ const FORTUNE_500_LOGOS: Fortune500Item[] = [
 const F500_ROW_1 = FORTUNE_500_LOGOS.slice(0, 10)
 const F500_ROW_2 = FORTUNE_500_LOGOS.slice(10, 20)
 
+const emptySubscribe = () => () => {}
+
 // ---------------------------------------------------------------------------
-// 5. HERO SECTION COMPONENT (<HeroSection />)
+// 5. HERO SECTION (Main Orchestrator Component)
 // ---------------------------------------------------------------------------
 export function HeroSection() {
-  const [mounted, setMounted] = useState(false)
+  const mounted = React.useSyncExternalStore(emptySubscribe, () => true, () => false)
   const heroContainerRef = useRef<HTMLElement>(null)
   const badgeRef = useRef<HTMLDivElement>(null)
   const headlineRef = useRef<HTMLHeadingElement>(null)
   const subheadlineRef = useRef<HTMLParagraphElement>(null)
   const ctaGroupRef = useRef<HTMLDivElement>(null)
-
-  // Avoid SSR hydration issues with WebGL Canvas
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // GSAP Entrance Choreography
   useEffect(() => {

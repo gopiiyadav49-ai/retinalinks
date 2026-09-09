@@ -18,64 +18,66 @@ const STUDIOS = [
   { city: 'Singapore', region: 'Asia-Pacific (SGT)', timezone: 'Asia/Singapore' },
 ]
 
-export function StudioClocks() {
-  const [mounted, setMounted] = React.useState(false)
-  const [times, setTimes] = React.useState<StudioTime[]>([])
+function computeStudioTimes(): StudioTime[] {
+  const now = new Date()
+  return STUDIOS.map((s) => {
+    try {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: s.timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      }).formatToParts(now)
 
-  const updateTimes = React.useCallback(() => {
-    const now = new Date()
-    const computed: StudioTime[] = STUDIOS.map((s) => {
-      try {
-        const timeStr = now.toLocaleTimeString('en-US', {
+      const hours = parts.find((p) => p.type === 'hour')?.value || '--'
+      const minutes = parts.find((p) => p.type === 'minute')?.value || '--'
+      const ampm = parts.find((p) => p.type === 'dayPeriod')?.value || ''
+
+      const hour24 = parseInt(
+        now.toLocaleTimeString('en-US', {
           timeZone: s.timezone,
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true,
-        })
-        const [timePart, ampm] = timeStr.split(' ')
-        const [hours, minutes] = timePart.split(':')
-        
-        // Compute 24-hour hour to check studio open status (09:00 - 18:00)
-        const hour24 = parseInt(
-          now.toLocaleTimeString('en-US', {
-            timeZone: s.timezone,
-            hour: 'numeric',
-            hour12: false,
-          }),
-          10
-        )
-        const isOpen = hour24 >= 9 && hour24 < 18
+          hour: 'numeric',
+          hour12: false,
+        }),
+        10
+      )
+      const isOpen = hour24 >= 9 && hour24 < 18
 
-        return {
-          city: s.city,
-          region: s.region,
-          timezone: s.timezone,
-          hours,
-          minutes,
-          ampm: ampm || '',
-          isOpen,
-        }
-      } catch {
-        return {
-          city: s.city,
-          region: s.region,
-          timezone: s.timezone,
-          hours: '10',
-          minutes: '00',
-          ampm: 'AM',
-          isOpen: true,
-        }
+      return {
+        city: s.city,
+        region: s.region,
+        timezone: s.timezone,
+        hours,
+        minutes,
+        ampm: ampm || '',
+        isOpen,
       }
-    })
-    setTimes(computed)
-  }, [])
+    } catch {
+      return {
+        city: s.city,
+        region: s.region,
+        timezone: s.timezone,
+        hours: '10',
+        minutes: '00',
+        ampm: 'AM',
+        isOpen: true,
+      }
+    }
+  })
+}
+
+const emptySubscribe = () => () => {}
+
+export function StudioClocks() {
+  const mounted = React.useSyncExternalStore(emptySubscribe, () => true, () => false)
+  const [times, setTimes] = React.useState<StudioTime[]>(computeStudioTimes)
 
   React.useEffect(() => {
-    setMounted(true)
-    updateTimes()
-    const interval = setInterval(updateTimes, 1000)
+    const interval = setInterval(() => {
+      setTimes(computeStudioTimes())
+    }, 1000)
     return () => clearInterval(interval)
-  }, [updateTimes])
+  }, [])
 
   if (!mounted) {
     return (

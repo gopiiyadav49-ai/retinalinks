@@ -12,6 +12,7 @@ export interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
   ({ className, as: Component = 'div', ...props }, ref) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Comp = Component as any
     return (
       <Comp
